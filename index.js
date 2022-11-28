@@ -143,6 +143,19 @@ async function run() {
         //Create user
         app.post('/users', async (req, res) => {
             const user = req.body;
+            const query = { email: user.email };
+            console.log(query);
+            const savedUser = await usersCollection.find(query).toArray();
+            if (savedUser.length) {
+                if (savedUser.length === 1) {
+                    if (savedUser[0].user_type !== user.user_type) {
+                        const result = await usersCollection.insertOne(user);
+                        res.send(result);
+                    }
+                    return;
+                }
+                return;
+            }
             const result = await usersCollection.insertOne(user);
             res.send(result);
         })
