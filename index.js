@@ -34,6 +34,7 @@ async function run() {
     try {
         //Collections
         const usersCollection = client.db('buy&sell').collection('users');
+        const productsCollection = client.db('buy&sell').collection('products');
 
         //admin verification : have to use after verifyJWT
         // const verifyAdmin = async (req, res, next) => {
@@ -75,12 +76,12 @@ async function run() {
         //     res.send(result);
         // })
 
-        //create a doctors api
-        // app.post('/doctors', verifyJWT, verifyAdmin, async (req, res) => {
-        //     const doctor = req.body;
-        //     const result = await doctorsCollection.insertOne(doctor);
-        //     res.send(result);
-        // })
+        //add a product api
+        app.post('/products', async (req, res) => {     //verifyJWT, verifyAdmin,
+            const product = req.body;
+            const result = await productsCollection.insertOne(product);
+            res.send(result);
+        })
 
         //find all the added doctors
         // app.get('/doctors', verifyJWT, verifyAdmin, async (req, res) => {
