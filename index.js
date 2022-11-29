@@ -14,6 +14,7 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.j7l4khx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+//verify jwt
 // function verifyJWT(req, res, next) {
 //     const authHeader = req.headers.authorization;
 //     if (!authHeader) {
@@ -98,19 +99,19 @@ async function run() {
         //     res.send(result);
         // })
 
-        //get bookings by email
-        // app.get('/bookings', verifyJWT, async (req, res) => {
-        //     const email = req.query.email;
-        //     const decodedEmail = req.decoded.email;
+        //get sellerProducts by sellerEmail
+        app.get('/products', verifyJWT, async (req, res) => {
+            const email = req.query.email;
+            const decodedEmail = req.decoded.email;
 
-        //     if (email !== decodedEmail) {
-        //         return res.status(403).send({ message: 'forbidden access' })
-        //     }
+            if (email !== decodedEmail) {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
 
-        //     const query = { email: email };
-        //     const bookings = await bookingsCollection.find(query).toArray();
-        //     res.send(bookings);
-        // })
+            const query = { sellerEmail: email };
+            const products = await productsCollection.find(query).toArray();
+            res.send(products);
+        })
 
         //Create Bookings
         // app.post('/bookings', async (req, res) => {
