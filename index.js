@@ -144,7 +144,6 @@ async function run() {
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
-            console.log(query);
             const savedUser = await usersCollection.find(query).toArray();
             if (savedUser.length) {
                 if (savedUser.length === 1) {
@@ -181,13 +180,14 @@ async function run() {
         //     res.send(result);
         // })
 
-        //check admin or not
-        // app.get('/users/admin/:email', async (req, res) => {
-        //     const email = req.params.email;
-        //     const query = { email };
-        //     const user = await usersCollection.findOne(query);
-        //     res.send({ isAdmin: user?.role === 'admin' });
-        // })
+        //check userType
+        app.get('/users/type/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await usersCollection.findOne(query);
+            const user_type = user.user_type;
+            res.send({ user_type });
+        })
 
     }
     finally {
