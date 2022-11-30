@@ -38,45 +38,6 @@ async function run() {
         const productsCollection = client.db('buy&sell').collection('products');
         const bookingsCollection = client.db('buy&sell').collection('bookings');
 
-        //admin verification : have to use after verifyJWT
-        // const verifyAdmin = async (req, res, next) => {
-        //     const decodedEmail = req.decoded.email;
-        //     const query = { email: decodedEmail };
-        //     const user = await usersCollection.findOne(query);
-        //     if (user?.role !== 'admin') {
-        //         return res.status(403).send({ message: 'forbidden access' })
-        //     }
-        //     next();
-        // }
-
-        //get appointmentOptions
-        // app.get('/appointmentOptions', async (req, res) => {
-        //     const date = req.query.date;
-        //     const query = {};
-        //     const cursor = optionsCollection.find(query);
-        //     const options = await cursor.toArray();
-
-        //     //get appointmentOptions on a particular date
-        //     const bookingQuery = { appointmentDate: date }
-        //     const allBooked = await bookingsCollection.find(bookingQuery).toArray();
-
-        //     options.forEach(option => {
-        //         const bookedOption = allBooked.filter(booked => booked.treatment === option.name);
-
-        //         const bookedOptionSlots = bookedOption.map(oneBookedOption => oneBookedOption.slot);
-        //         const remainingSlots = option.slots.filter(slot => !bookedOptionSlots.includes(slot));
-        //         option.slots = remainingSlots;
-        //     })
-
-        //     res.send(options);
-        // })
-
-        //get options name only (specialty)
-        // app.get('/specialty', async (req, res) => {
-        //     const query = {};
-        //     const result = await optionsCollection.find(query).project({ name: 1 }).toArray();
-        //     res.send(result);
-        // })
 
         //add a product api
         app.post('/products', async (req, res) => {     //verifyJWT, verifyAdmin,
@@ -84,21 +45,6 @@ async function run() {
             const result = await productsCollection.insertOne(product);
             res.send(result);
         })
-
-        //find all the added doctors
-        // app.get('/doctors', verifyJWT, verifyAdmin, async (req, res) => {
-        //     const query = {};
-        //     const doctors = await doctorsCollection.find(query).toArray();
-        //     res.send(doctors);
-        // })
-
-        //delete a doctor
-        // app.delete('/doctors/:id', verifyJWT, verifyAdmin, async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) };
-        //     const result = await doctorsCollection.deleteOne(query);
-        //     res.send(result);
-        // })
 
         //get all products by category name
         app.get('/category/:name', async (req, res) => {
@@ -161,14 +107,14 @@ async function run() {
         })
 
         //getSellers
-        app.get('/users/sellers', async (req, res) => {
+        app.get('/users/sellers', verifyJWT, async (req, res) => {
             const query = { user_type: 'Seller' }
             const sellers = await usersCollection.find(query).toArray();
             res.send(sellers);
         })
 
         //getBuyers
-        app.get('/users/buyers', async (req, res) => {
+        app.get('/users/buyers', verifyJWT, async (req, res) => {
             const query = { user_type: 'Buyer' }
             const buyers = await usersCollection.find(query).toArray();
             res.send(buyers);
