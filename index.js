@@ -99,6 +99,14 @@ async function run() {
         //     res.send(result);
         // })
 
+        //get all products by category name
+        app.get('/category/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { category: name };
+            const products = await productsCollection.find(query).toArray();
+            res.send(products);
+        })
+
         //get sellerProducts by sellerEmail
         app.get('/products', verifyJWT, async (req, res) => {
             const email = req.query.email;
