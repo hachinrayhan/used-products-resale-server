@@ -160,12 +160,19 @@ async function run() {
             res.send(result);
         })
 
-        //getUsers
-        // app.get('/users', async (req, res) => {
-        //     const query = {}
-        //     const users = await usersCollection.find(query).toArray();
-        //     res.send(users);
-        // })
+        //getSellers
+        app.get('/users/sellers', async (req, res) => {
+            const query = { user_type: 'Seller' }
+            const sellers = await usersCollection.find(query).toArray();
+            res.send(sellers);
+        })
+
+        //getBuyers
+        app.get('/users/buyers', async (req, res) => {
+            const query = { user_type: 'Buyer' }
+            const buyers = await usersCollection.find(query).toArray();
+            res.send(buyers);
+        })
 
         //update product status
         app.put('/products/status/:id', verifyJWT, async (req, res) => {
