@@ -36,6 +36,7 @@ async function run() {
         //Collections
         const usersCollection = client.db('buy&sell').collection('users');
         const productsCollection = client.db('buy&sell').collection('products');
+        const bookingsCollection = client.db('buy&sell').collection('bookings');
 
         //admin verification : have to use after verifyJWT
         // const verifyAdmin = async (req, res, next) => {
@@ -122,21 +123,11 @@ async function run() {
         })
 
         //Create Bookings
-        // app.post('/bookings', async (req, res) => {
-        //     const booking = req.body;
-        //     const query = {
-        //         email: booking.email,
-        //         appointmentDate: booking.appointmentDate,
-        //         treatment: booking.treatment
-        //     }
-        //     const alreadyBooked = await bookingsCollection.find(query).toArray();
-        //     if (alreadyBooked.length) {
-        //         const message = `You have already an appointment for ${booking.treatment} on ${booking.appointmentDate}`
-        //         return res.send({ acknowledged: false, message })
-        //     }
-        //     const result = await bookingsCollection.insertOne(booking);
-        //     res.send(result);
-        // })
+        app.post('/bookings', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingsCollection.insertOne(booking);
+            res.send(result);
+        })
 
         //Generate a jwt token
         app.get('/jwt', async (req, res) => {
@@ -176,19 +167,19 @@ async function run() {
         //     res.send(users);
         // })
 
-        //updateUsersRole
-        // app.put('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
-        //     const id = req.params.id;
-        //     const filter = { _id: ObjectId(id) }
-        //     const options = { upsert: true };
-        //     const updatedDoc = {
-        //         $set: {
-        //             role: 'admin'
-        //         }
-        //     };
-        //     const result = await usersCollection.updateOne(filter, updatedDoc, options);
-        //     res.send(result);
-        // })
+        //update product status
+        app.put('/products/status/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    status: 'booked'
+                }
+            };
+            const result = await productsCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
 
         //check userType
         app.get('/users/type/:email', async (req, res) => {
